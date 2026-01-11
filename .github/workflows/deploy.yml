@@ -18,7 +18,7 @@ jobs:
           - name: OIDC
             uses: aws-actions/configure-aws-credentials@v2
             with:
-              role-to-assume: arn:aws:iam::7588-9059-8971:role/GitHubActionRole
+              role-to-assume: arn:aws:iam::758890598971:role/GitHubActionRole
               aws-region: eu-central-1
 
           - name: Lambda
