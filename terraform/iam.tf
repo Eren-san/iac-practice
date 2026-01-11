@@ -61,27 +61,37 @@ data "aws_iam_policy_document" "lambda_policy_doc" {
     resources = ["*"] 
   }
 }
+data "aws_caller_identity" "me" {}
+
+data "aws_iam_policy_document" "oidc_policy" {
+  version = "2012-10-17"
+  statement {
+
+    actions = [
+      "sts:AssumeRoleWithWebIdentity"
+    ]
+    condition {
+      test     = "StringEquals"
+      variable = "token.actions.githubusercontent.com:sub"
+      values   = ["repo:Eren-san/iac-practice:ref:refs/heads/main"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "token.actions.githubusercontent.com:aud"
+      values   = ["sts.amazonaws.com"]
+    }
+    effect = "Allow"
+    principals {
+      type        = "Federated"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.me.account_id}:oidc-provider/token.actions.githubusercontent.com"]
+    }
+  }
+}
 
 resource "aws_iam_role" "github_oidc_role" {
   name = "GitHubActionRole" 
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRoleWithWebIdentity"
-        Effect = "Allow"
-        Principal = {
-          Federated = aws_iam_openid_connect_provider.github.arn
-        }
-        Condition = {
-          StringLike = {
-            "token.actions.githubusercontent.com:sub": "repo:Eren-san/iac-practice:*"
-          }
-        }
-      }
-    ]
-  })
+assume_role_policy = data.aws_iam_policy_document.oidc_policy.json
 }
 
 resource "aws_iam_role_policy" "github_actions_limited_policy" {
