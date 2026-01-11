@@ -112,7 +112,8 @@ resource "aws_iam_role_policy" "github_actions_limited_policy" {
           "iam:*",           
           "logs:*",          
           "lambda:*",       
-          "ecr:*"            
+          "ecr:*",   
+          "dynamodb:*"         
         ]
         Resource = "*"
       }
