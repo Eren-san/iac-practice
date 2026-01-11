@@ -21,12 +21,6 @@ jobs:
               role-to-assume: arn:aws:iam::758890598971:role/GitHubActionRole
               aws-region: eu-central-1
 
-          - name: Lambda
-            run: |
-                L_ERR=$(aws cloudwatch get-metric-data --metric-data-queries '[{"Id":"errors","MetricStat":{"Metric":{"Namespace":"AWS/Lambda","MetricName":"Errors","Dimensions":[{"Name":"FunctionName","Value":"fastapi-lambda-function"}]},"Period":300,"Stat":"Sum"},"ReturnData":true}]' --start-time $(date -u -d '10 minutes ago' +%Y-%m-%dT%H:%M:%SZ) --end-time $(date -u +%Y-%m-%dT%H:%M:%SZ) --query 'MetricDataResults[0].Values[0]' --output text)
-                echo "Lambda_Errors: $L_ERR" > report.txt
-                aws s3 cp report.txt s3://s3-b-t-s1/
-
           - name: Terraform
             run: |
               terraform init
