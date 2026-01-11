@@ -10,7 +10,7 @@ resource "aws_security_group" "alb_sg" {
     egress {
         from_port = 80
         to_port = 80
-        protocol = "-1"
+        protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }
 }
@@ -28,7 +28,7 @@ resource "aws_security_group" "ecs_sg" {
     egress {
         from_port = 80
         to_port = 80
-        protocol = "-1"
+        protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }
     

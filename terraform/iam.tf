@@ -61,3 +61,51 @@ data "aws_iam_policy_document" "lambda_policy_doc" {
     resources = ["*"] 
   }
 }
+
+resource "aws_iam_role" "github_oidc_role" {
+  name = "GitHubActionRole" 
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Effect = "Allow"
+        Principal = {
+          Federated = aws_iam_openid_connect_provider.github.arn
+        }
+        Condition = {
+          StringLike = {
+            "token.actions.githubusercontent.com:sub": "repo:Eren-san/iac-practice:*"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "github_actions_limited_policy" {
+  name = "GitHubActionsLimitedPolicy"
+  role = aws_iam_role.github_oidc_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+
+        Action = [
+          "ec2:*",           
+          "rds:*",          
+          "ecs:*",          
+          "s3:*",           
+          "iam:*",           
+          "logs:*",          
+          "lambda:*",       
+          "ecr:*"            
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
