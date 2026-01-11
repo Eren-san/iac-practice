@@ -105,15 +105,7 @@ resource "aws_iam_role_policy" "github_actions_limited_policy" {
         Effect = "Allow"
 
         Action = [
-          "ec2:*",           
-          "rds:*",          
-          "ecs:*",          
-          "s3:*",           
-          "iam:*",           
-          "logs:*",          
-          "lambda:*",       
-          "ecr:*",   
-          "dynamodb:*"         
+          "*"       
         ]
         Resource = "*"
       }
