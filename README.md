@@ -1,4 +1,4 @@
-# 🏗️ iac-practice
+# iac-practice
 
 This repository is a hands-on practice project combining **Infrastructure as Code (IaC)** with a simple application setup.  
 It is designed to experiment with Terraform, Docker, CI/CD, and serverless concepts in a practical way.
